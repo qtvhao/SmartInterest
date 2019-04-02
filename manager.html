@@ -18,8 +18,9 @@
                 scope.localStorage = JSON.parse(window.localStorage.angular);
             }else{
                 scope.localStorage = {};
-                window.localStorage.angular = '{}';
+                window.localStorage.angular = '{"portfolio":[{"date":"Fri Mar 13 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"VJC","price_buyAt":119400,"calculateExpectedInterested":"1.01741351","calculateDiffInDaysHuman":"21.18643884","calculateActualInterested":121500},{"date":"Fri Mar 22 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"DXG","price_buyAt":228000,"calculateExpectedInterested":"1.01001625","calculateDiffInDaysHuman":"12.18643884","calculateActualInterested":230300}],"expected_interested":30}';
             }
+            scope.localStorage.expected_interested = scope.localStorage.expected_interested || 30;
             scope.$watch('localStorage', function (newVal, oldVal) {
                 window.localStorage.angular = JSON.stringify(angular.copy(newVal));
             }, true);
@@ -32,6 +33,7 @@
                         portfolio_item.calculateExpectedInterested = scope.calculateExpectedInterested(portfolio_item);
                         portfolio_item.calculateDiffInDaysHuman = scope.calculateDiffInDaysHuman(portfolio_item);
                         portfolio_item.calculateActualInterested = scope.calculateActualInterested(portfolio_item);
+                        return portfolio_item;
                     });
             }, 1e3);
             scope.addToPortfolio = function () {
@@ -46,11 +48,13 @@
             };
             scope.calculateDiffInDaysHuman = function (portfolio_item) {
                 var forDays = new Date(portfolio_item.date);
-                return (Date.now() - forDays) / 86400000;
+                var diffInDays = (Date.now() - forDays) / 86400000;
+                return diffInDays.toFixed(8);
             };
             scope.calculateExpectedInterested = function(portfolio_item){
                 var diffInDaysHuman = scope.calculateDiffInDaysHuman(portfolio_item);
-                return ((scope.localStorage.expected_interested / 365) * (diffInDaysHuman + 3) + 100) / 100;
+                var expectedInterested = ((scope.localStorage.expected_interested / 365) * (diffInDaysHuman + 6) + 100) / 100;
+                return expectedInterested.toFixed(8);
             };
             scope.calculateActualInterested = function (portfolio_item) {
                 var expectedInterestAfterDays = scope.calculateExpectedInterested(portfolio_item);
@@ -62,6 +66,9 @@
             scope.iconChartObjects = [
                 {
                     "icon": "VIC",
+                },
+                {
+                    "icon": "VJC",
                 },
             ];
             var returnIconChartObjects = function (iconChartObject, iconChartObjectRef, forDays, buyAt) {
