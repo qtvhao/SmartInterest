@@ -16,11 +16,17 @@
             var http = $http;
             if(window.localStorage.angular){
                 scope.localStorage = JSON.parse(window.localStorage.angular);
+            }else{
+                scope.localStorage = {};
+                window.localStorage.angular = '{}';
             }
             scope.$watch('localStorage', function (newVal, oldVal) {
                 window.localStorage.angular = JSON.stringify(angular.copy(newVal));
             }, true);
             $interval(function () {
+                if(typeof scope.localStorage.portfolio !== 'object' || !scope.localStorage.portfolio) {
+                    scope.localStorage.portfolio = [];
+                }
                 scope.localStorage.portfolio = scope.localStorage.portfolio
                     .map(function (portfolio_item) {
                         portfolio_item.calculateExpectedInterested = scope.calculateExpectedInterested(portfolio_item);
@@ -96,7 +102,8 @@
                                         "type": "number"
                                     }
                                 ],
-                                "rows": [],                            },
+                                "rows": [],
+                            },
                             "options": {
                                 "title": "Sales per month",
                                 "isStacked": "true",
@@ -119,7 +126,6 @@
                     var jsonData = respData.data;
                     var iconData = JSON.parse(jsonData);
                     iconChartObject.data.rows = iconData.c.map(function (c) {
-                        console.log(c);
                         var cRows = [
                             {
                                 "v": c
