@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+<head>
+    <style>
+        body{
+            font-family: Arial,Sans-Serif;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script>
+    <script>
+        var app = angular.module('myApp', []);
+        app.controller('myCtrl', function ($scope) {
+            var scope = $scope;
+            if(window.localStorage.angular){
+                scope.localStorage = JSON.parse(window.localStorage.angular);
+            }
+            scope.$watch('localStorage', function (newVal, oldVal) {
+                window.localStorage.angular = JSON.stringify(angular.copy(newVal));
+            }, true);
+            scope.addToPortfolio = function () {
+                if(typeof scope.localStorage.portfolio !=='object' || typeof scope.localStorage.portfolio.push !== 'function') {
+                    scope.localStorage.portfolio = [];
+                }
+                scope.localStorage.portfolio.push({
+                    date: scope.new_portfolio_item_date.toString(),
+                    icon: scope.new_portfolio_item_icon,
+                    price_buyAt: scope.new_portfolio_item_price,
+                });
+            };
+            scope.calculateDiffInDaysHuman = function (portfolio_item) {
+                var forDays = new Date(portfolio_item.date);
+                return (Date.now() - forDays) / 86400000;
+            };
+            scope.calculateExpectedInterested = function(portfolio_item){
+                var diffInDaysHuman = scope.calculateDiffInDaysHuman(portfolio_item);
+                return ((scope.localStorage.expected_interested / 365) * (diffInDaysHuman + 3) + 100) / 100;
+            };
+            scope.calculateActualInterested = function (portfolio_item) {
+                var expectedInterestAfterDays = scope.calculateExpectedInterested(portfolio_item);
+                var expectedSoldAt = expectedInterestAfterDays * portfolio_item.price_buyAt;
+                return Math.round(expectedSoldAt / 100) * 100;
+            };
+        })
+    </script>
+</head>
+<body ng-app="myApp" ng-controller="myCtrl">
+<div>
+    <div>
+        <input type="number" ng-model="localStorage.expected_interested"> % expected interested
+    </div>
+    <div>
+        <h4>Portfolio</h4>
+    </div>
+    <div id="portfolio">
+        <div ng-repeat="portfolio_item in localStorage.portfolio">
+            <input type="text" ng-model="portfolio_item.date" placeholder="new_portfolio_item_date">
+            <input type="text" ng-model="portfolio_item.icon" placeholder="new_portfolio_item_icon">
+            Buy at: <input type="number" ng-model="portfolio_item.price_buyAt" placeholder="price_buyAt">
+<!--            <input type="number" ng-model="portfolio_item.price_soldAt" placeholder="price_soldAt">-->
+            Interested: <input type="text" ng-value="calculateExpectedInterested(portfolio_item)"> % -
+            After days: <input type="text" ng-value="calculateDiffInDaysHuman(portfolio_item)">
+            Sold at: <input type="text" ng-value="calculateActualInterested(portfolio_item)">
+        </div>
+    </div>
+    <hr>
+    <div>
+        Create new
+    </div>
+    <div>
+        <input type="date" ng-model="new_portfolio_item_date" placeholder="new_portfolio_item_date">
+        <input type="text" ng-model="new_portfolio_item_icon" placeholder="new_portfolio_item_icon">
+        <input type="number" ng-model="new_portfolio_item_price" placeholder="new_portfolio_item_price">
+        <button ng-click="addToPortfolio()">Submit</button>
+    </div>
+</div>
+</body>
+</html>
