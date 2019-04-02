@@ -79,44 +79,26 @@
                                         "p": {}
                                     },
                                     {
-                                        "id": "laptop-id",
-                                        "label": "Laptop",
-                                        "type": "number",
-                                        "p": {}
-                                    },
-                                    {
-                                        "id": "desktop-id",
-                                        "label": "Desktop",
-                                        "type": "number",
-                                        "p": {}
-                                    },
-                                    {
-                                        "id": "server-id",
-                                        "label": "Server",
-                                        "type": "number",
-                                        "p": {}
-                                    },
-                                    {
-                                        "id": "cost-id",
-                                        "label": "Shipping",
+                                        "id": "price",
+                                        "label": "Price",
                                         "type": "number"
                                     }
                                 ],
                                 "rows": [],
                             },
                             "options": {
-                                "title": "Sales per month",
+                                "title": iconChartObject.icon.toUpperCase(),
                                 "isStacked": "true",
                                 "fill": 20,
                                 "displayExactValues": true,
                                 "vAxis": {
-                                    "title": "Sales unit",
-                                    "gridlines": {
-                                        "count": 10
-                                    }
+                                    "title": "Price",
+                                    // "gridlines": {
+                                    //     "count": 10
+                                    // }
                                 },
                                 "hAxis": {
-                                    "title": "Date"
+                                    "title": "Time"
                                 }
                             },
                             "formatters": {}
@@ -178,7 +160,7 @@
     <div>Market</div>
     <div>
         <div ng-repeat="iconChartObject in iconChartObjects">
-            <div google-chart chart="iconChartObject" style="{{cssStyle}}"></div>
+            <div google-chart chart="iconChartObject" style="width:600px;"></div>
         </div>
     </div>
 </div>
