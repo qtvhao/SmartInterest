@@ -11,14 +11,23 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-google-chart/1.0.0-beta.1/ng-google-chart.min.js" type="text/javascript"></script>
     <script>
         var app = angular.module('myApp', ['googlechart']);
-        app.controller('myCtrl', function ($scope) {
+        app.controller('myCtrl', function ($scope, $http, $interval) {
             var scope = $scope;
+            var http = $http;
             if(window.localStorage.angular){
                 scope.localStorage = JSON.parse(window.localStorage.angular);
             }
             scope.$watch('localStorage', function (newVal, oldVal) {
                 window.localStorage.angular = JSON.stringify(angular.copy(newVal));
             }, true);
+            $interval(function () {
+                scope.localStorage.portfolio = scope.localStorage.portfolio
+                    .map(function (portfolio_item) {
+                        portfolio_item.calculateExpectedInterested = scope.calculateExpectedInterested(portfolio_item);
+                        portfolio_item.calculateDiffInDaysHuman = scope.calculateDiffInDaysHuman(portfolio_item);
+                        portfolio_item.calculateActualInterested = scope.calculateActualInterested(portfolio_item);
+                    });
+            }, 1e3);
             scope.addToPortfolio = function () {
                 if(typeof scope.localStorage.portfolio !=='object' || typeof scope.localStorage.portfolio.push !== 'function') {
                     scope.localStorage.portfolio = [];
@@ -46,122 +55,85 @@
 
             scope.iconChartObjects = [
                 {
-                    "type": "LineChart",
-                    "displayed": false,
-                    "data": {
-                        "cols": [
-                            {
-                                "id": "month",
-                                "label": "Month",
-                                "type": "string",
-                                "p": {}
-                            },
-                            {
-                                "id": "laptop-id",
-                                "label": "Laptop",
-                                "type": "number",
-                                "p": {}
-                            },
-                            {
-                                "id": "desktop-id",
-                                "label": "Desktop",
-                                "type": "number",
-                                "p": {}
-                            },
-                            {
-                                "id": "server-id",
-                                "label": "Server",
-                                "type": "number",
-                                "p": {}
-                            },
-                            {
-                                "id": "cost-id",
-                                "label": "Shipping",
-                                "type": "number"
-                            }
-                        ],
-                        "rows": [
-                            {
-                                "c": [
-                                    {
-                                        "v": "January"
-                                    },
-                                    {
-                                        "v": 19,
-                                        "f": "42 items"
-                                    },
-                                    {
-                                        "v": 12,
-                                        "f": "Ony 12 items"
-                                    },
-                                    {
-                                        "v": 7,
-                                        "f": "7 servers"
-                                    },
-                                    {
-                                        "v": 4
-                                    }
-                                ]
-                            },
-                            {
-                                "c": [
-                                    {
-                                        "v": "February"
-                                    },
-                                    {
-                                        "v": 13
-                                    },
-                                    {
-                                        "v": 1,
-                                        "f": "1 unit (Out of stock this month)"
-                                    },
-                                    {
-                                        "v": 12
-                                    },
-                                    {
-                                        "v": 2
-                                    }
-                                ]
-                            },
-                            {
-                                "c": [
-                                    {
-                                        "v": "March"
-                                    },
-                                    {
-                                        "v": 24
-                                    },
-                                    {
-                                        "v": 5
-                                    },
-                                    {
-                                        "v": 11
-                                    },
-                                    {
-                                        "v": 6
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    "options": {
-                        "title": "Sales per month",
-                        "isStacked": "true",
-                        "fill": 20,
-                        "displayExactValues": true,
-                        "vAxis": {
-                            "title": "Sales unit",
-                            "gridlines": {
-                                "count": 10
-                            }
-                        },
-                        "hAxis": {
-                            "title": "Date"
-                        }
-                    },
-                    "formatters": {}
-                }
+                    "icon": "VIC",
+                },
             ];
+            scope.iconChartObjects.map(function (iconChartObject) {
+                http
+                    .get('https://api.vietstock.vn/ta/history?symbol=VIC&resolution=&from=1519000000&to=1579068395&date=').then(function (respData) {
+                    angular.extend(iconChartObject, {
+                            "type": "LineChart",
+                            "displayed": false,
+                            "data": {
+                                "cols": [
+                                    {
+                                        "id": "month",
+                                        "label": "Month",
+                                        "type": "string",
+                                        "p": {}
+                                    },
+                                    {
+                                        "id": "laptop-id",
+                                        "label": "Laptop",
+                                        "type": "number",
+                                        "p": {}
+                                    },
+                                    {
+                                        "id": "desktop-id",
+                                        "label": "Desktop",
+                                        "type": "number",
+                                        "p": {}
+                                    },
+                                    {
+                                        "id": "server-id",
+                                        "label": "Server",
+                                        "type": "number",
+                                        "p": {}
+                                    },
+                                    {
+                                        "id": "cost-id",
+                                        "label": "Shipping",
+                                        "type": "number"
+                                    }
+                                ],
+                                "rows": [],                            },
+                            "options": {
+                                "title": "Sales per month",
+                                "isStacked": "true",
+                                "fill": 20,
+                                "displayExactValues": true,
+                                "vAxis": {
+                                    "title": "Sales unit",
+                                    "gridlines": {
+                                        "count": 10
+                                    }
+                                },
+                                "hAxis": {
+                                    "title": "Date"
+                                }
+                            },
+                            "formatters": {}
+                        }
+                    );
+
+                    var jsonData = respData.data;
+                    var iconData = JSON.parse(jsonData);
+                    iconChartObject.data.rows = iconData.c.map(function (c) {
+                        console.log(c);
+                        var cRows = [
+                            {
+                                "v": c
+                            }
+                        ];
+                        cRows.unshift({
+                            "v": "Price"
+                        });
+                        return {
+                            "c": cRows
+                        };
+                    });
+                });
+            })
         });
     </script>
 </head>
@@ -179,9 +151,9 @@
             <input type="text" ng-model="portfolio_item.icon" placeholder="new_portfolio_item_icon">
             Buy at: <input type="number" ng-model="portfolio_item.price_buyAt" placeholder="price_buyAt">
 <!--            <input type="number" ng-model="portfolio_item.price_soldAt" placeholder="price_soldAt">-->
-            Interested: <input type="text" ng-value="calculateExpectedInterested(portfolio_item)"> % -
-            After days: <input type="text" ng-value="calculateDiffInDaysHuman(portfolio_item)">
-            Sold at: <input type="text" ng-value="calculateActualInterested(portfolio_item)">
+            Interested: {{portfolio_item.calculateExpectedInterested}} % -
+            After days: <input type="text" ng-value="portfolio_item.calculateDiffInDaysHuman">
+            Sold at: <input type="text" ng-value="portfolio_item.calculateActualInterested">
         </div>
     </div>
     <hr>
