@@ -7,8 +7,10 @@
         }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script>
+    <!-- minified for production -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-google-chart/1.0.0-beta.1/ng-google-chart.min.js" type="text/javascript"></script>
     <script>
-        var app = angular.module('myApp', []);
+        var app = angular.module('myApp', ['googlechart']);
         app.controller('myCtrl', function ($scope) {
             var scope = $scope;
             if(window.localStorage.angular){
@@ -40,7 +42,127 @@
                 var expectedSoldAt = expectedInterestAfterDays * portfolio_item.price_buyAt;
                 return Math.round(expectedSoldAt / 100) * 100;
             };
-        })
+
+
+            scope.iconChartObjects = [
+                {
+                    "type": "LineChart",
+                    "displayed": false,
+                    "data": {
+                        "cols": [
+                            {
+                                "id": "month",
+                                "label": "Month",
+                                "type": "string",
+                                "p": {}
+                            },
+                            {
+                                "id": "laptop-id",
+                                "label": "Laptop",
+                                "type": "number",
+                                "p": {}
+                            },
+                            {
+                                "id": "desktop-id",
+                                "label": "Desktop",
+                                "type": "number",
+                                "p": {}
+                            },
+                            {
+                                "id": "server-id",
+                                "label": "Server",
+                                "type": "number",
+                                "p": {}
+                            },
+                            {
+                                "id": "cost-id",
+                                "label": "Shipping",
+                                "type": "number"
+                            }
+                        ],
+                        "rows": [
+                            {
+                                "c": [
+                                    {
+                                        "v": "January"
+                                    },
+                                    {
+                                        "v": 19,
+                                        "f": "42 items"
+                                    },
+                                    {
+                                        "v": 12,
+                                        "f": "Ony 12 items"
+                                    },
+                                    {
+                                        "v": 7,
+                                        "f": "7 servers"
+                                    },
+                                    {
+                                        "v": 4
+                                    }
+                                ]
+                            },
+                            {
+                                "c": [
+                                    {
+                                        "v": "February"
+                                    },
+                                    {
+                                        "v": 13
+                                    },
+                                    {
+                                        "v": 1,
+                                        "f": "1 unit (Out of stock this month)"
+                                    },
+                                    {
+                                        "v": 12
+                                    },
+                                    {
+                                        "v": 2
+                                    }
+                                ]
+                            },
+                            {
+                                "c": [
+                                    {
+                                        "v": "March"
+                                    },
+                                    {
+                                        "v": 24
+                                    },
+                                    {
+                                        "v": 5
+                                    },
+                                    {
+                                        "v": 11
+                                    },
+                                    {
+                                        "v": 6
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "options": {
+                        "title": "Sales per month",
+                        "isStacked": "true",
+                        "fill": 20,
+                        "displayExactValues": true,
+                        "vAxis": {
+                            "title": "Sales unit",
+                            "gridlines": {
+                                "count": 10
+                            }
+                        },
+                        "hAxis": {
+                            "title": "Date"
+                        }
+                    },
+                    "formatters": {}
+                }
+            ];
+        });
     </script>
 </head>
 <body ng-app="myApp" ng-controller="myCtrl">
@@ -71,6 +193,15 @@
         <input type="text" ng-model="new_portfolio_item_icon" placeholder="new_portfolio_item_icon">
         <input type="number" ng-model="new_portfolio_item_price" placeholder="new_portfolio_item_price">
         <button ng-click="addToPortfolio()">Submit</button>
+    </div>
+</div>
+
+<div>
+    <div>Market</div>
+    <div>
+        <div ng-repeat="iconChartObject in iconChartObjects">
+            <div google-chart chart="iconChartObject" style="{{cssStyle}}"></div>
+        </div>
     </div>
 </div>
 </body>
