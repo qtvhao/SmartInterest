@@ -64,9 +64,19 @@
                     "icon": "VIC",
                 },
             ];
-            var returnIconChartObjects = function (iconChartObject, iconChartObjectRef) {
+            var returnIconChartObjects = function (iconChartObject, iconChartObjectRef, forDays, buyAt) {
+                var nowEpoch = Math.round(Date.now().valueOf()/1000);
+                var from;
+                buyAt = buyAt || null;
+                forDays = forDays || null;
+                if(forDays === null){
+                    from = 1519000000;
+                }else{
+                    from = (nowEpoch - forDays * 86400);
+                }
                 http
-                    .get('https://api.vietstock.vn/ta/history?symbol='+iconChartObject.icon+'&resolution=&from=1519000000&to=1579068395&date=').then(function (respData) {
+                    .get('https://api.vietstock.vn/ta/history?symbol='+iconChartObject.icon+'&resolution=&from=' + from + '&to=' + nowEpoch + '&date=').then(function (respData) {
+                    var baseline = (forDays>70)?0:null;
                     angular.extend(iconChartObjectRef, {
                             "type": "LineChart",
                             "displayed": false,
@@ -96,6 +106,8 @@
                                     // "gridlines": {
                                     //     "count": 10
                                     // }
+                                    "minValue": buyAt,
+                                    baseline: (baseline)
                                 },
                                 "hAxis": {
                                     "title": "Time"
@@ -128,9 +140,9 @@
                 iconChartObject.chart3 = {};
                 iconChartObject.chart4 = {};
                 returnIconChartObjects(iconChartObject,iconChartObject.chart1);
-                returnIconChartObjects(iconChartObject,iconChartObject.chart2);
-                returnIconChartObjects(iconChartObject,iconChartObject.chart3);
-                returnIconChartObjects(iconChartObject,iconChartObject.chart4);
+                returnIconChartObjects(iconChartObject,iconChartObject.chart2, 360);
+                returnIconChartObjects(iconChartObject,iconChartObject.chart3, 60);
+                returnIconChartObjects(iconChartObject,iconChartObject.chart4, 30);
             })
         });
     </script>
