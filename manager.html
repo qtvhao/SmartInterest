@@ -64,10 +64,10 @@
                     "icon": "VIC",
                 },
             ];
-            scope.iconChartObjects.map(function (iconChartObject) {
+            var returnIconChartObjects = function (iconChartObject, iconChartObjectRef) {
                 http
-                    .get('https://api.vietstock.vn/ta/history?symbol=VIC&resolution=&from=1519000000&to=1579068395&date=').then(function (respData) {
-                    angular.extend(iconChartObject, {
+                    .get('https://api.vietstock.vn/ta/history?symbol='+iconChartObject.icon+'&resolution=&from=1519000000&to=1579068395&date=').then(function (respData) {
+                    angular.extend(iconChartObjectRef, {
                             "type": "LineChart",
                             "displayed": false,
                             "data": {
@@ -107,7 +107,7 @@
 
                     var jsonData = respData.data;
                     var iconData = JSON.parse(jsonData);
-                    iconChartObject.data.rows = iconData.c.map(function (c) {
+                    iconChartObjectRef.data.rows = iconData.c.map(function (c) {
                         var cRows = [
                             {
                                 "v": c
@@ -121,6 +121,16 @@
                         };
                     });
                 });
+            };
+            scope.iconChartObjects.map(function (iconChartObject) {
+                iconChartObject.chart1 = {};
+                iconChartObject.chart2 = {};
+                iconChartObject.chart3 = {};
+                iconChartObject.chart4 = {};
+                returnIconChartObjects(iconChartObject,iconChartObject.chart1);
+                returnIconChartObjects(iconChartObject,iconChartObject.chart2);
+                returnIconChartObjects(iconChartObject,iconChartObject.chart3);
+                returnIconChartObjects(iconChartObject,iconChartObject.chart4);
             })
         });
     </script>
@@ -160,7 +170,10 @@
     <div>Market</div>
     <div>
         <div ng-repeat="iconChartObject in iconChartObjects">
-            <div google-chart chart="iconChartObject" style="width:600px;"></div>
+            <div google-chart chart="iconChartObject.chart1" style="width:430px;float:left;"></div>
+            <div google-chart chart="iconChartObject.chart2" style="width:430px;float:left;"></div>
+            <div google-chart chart="iconChartObject.chart3" style="width:430px;float:left;"></div>
+            <div google-chart chart="iconChartObject.chart4" style="width:430px;float:left;"></div>
         </div>
     </div>
 </div>
