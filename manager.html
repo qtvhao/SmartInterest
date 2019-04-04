@@ -83,7 +83,7 @@
                 }
                 http
                     .get('https://api.vietstock.vn/ta/history?symbol='+iconChartObject.icon+'&resolution=&from=' + from + '&to=' + nowEpoch + '&date=').then(function (respData) {
-                    var baseline = (forDays>70)?0:null;
+                    var baseline = (forDays>70 || forDays === null)?0:null;
                     angular.extend(iconChartObjectRef, {
                             "type": "LineChart",
                             "displayed": false,
