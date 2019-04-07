@@ -28,7 +28,7 @@
                         "date":"Fri Mar 13 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"VJC","price_buyAt":119400,"calculateExpectedInterested":"1.01741351","calculateDiffInDaysHuman":"21.18643884","calculateActualInterested":121500
                     }
                 ],
-                "expected_interested":50
+                "expected_interested":100
             };
             scope.localStorage.expected_interested = scope.localStorage.expected_interested || 30;
             scope.$watch('localStorage', function (newVal, oldVal) {
@@ -74,9 +74,11 @@
 
 
             scope.iconChartObjects = [
+                'VinGroup',
                 {"icon": "VIC",},
                 {"icon": "VHM",},
                 {"icon": "VRE",},
+                'DragonCapital',
                 {"icon": "MWG",},
                 {"icon": "ACB",},
                 {"icon": "KDH",},
@@ -87,6 +89,25 @@
                 {"icon": "VNM",},
                 {"icon": "DXG",},
                 {"icon": "FPT",},
+                'VOF',
+                {"icon": "HPG",},
+                {"icon": "KDH",},
+                {"icon": "ACV",},
+                {"icon": "VNM",},
+                {"icon": "PNJ",},
+                {"icon": "EIB",},
+                {"icon": "QNS",},
+                {"icon": "CTD",},
+                {"icon": "VJC",},
+                {"icon": "POW",},
+                'VNM - VanEck Vectors Vietnam ETF',
+                {"icon": "VIC",},
+                {"icon": "VNM",},
+                {"icon": "VHM",},
+                {"icon": "VCB",},
+                {"icon": "NVL",},
+                {"icon": "VRE",},
+                {"icon": "BVH",},
             ];
             var returnIconChartObjects = function (iconChartObject, iconChartObjectRef, forDays, buyAt) {
                 var nowEpoch = Math.round(Date.now().valueOf()/1000);
@@ -192,6 +213,11 @@
                     case 'VNM':return 125100;
                     case 'DXG':return 22750;
                     case 'FPT':return 42500;
+                    case 'VCB':return 58600;
+                    case 'NVL':return 55400;
+                    case 'EIB':return 15000;
+                    case 'QNS':return 40200;
+                    case 'VJC':return 112800;
                 }
             }
             scope.iconChartObjects.map(function (iconChartObject) {
@@ -242,10 +268,15 @@
     <div>Market</div>
     <div>
         <div ng-repeat="iconChartObject in iconChartObjects">
-            <div google-chart chart="iconChartObject.chart1" style="width:430px;height:500px;float:left;"></div>
-            <div google-chart chart="iconChartObject.chart2" style="width:430px;height:500px;float:left;"></div>
-            <div google-chart chart="iconChartObject.chart3" style="width:430px;height:500px;float:left;"></div>
-            <div google-chart chart="iconChartObject.chart4" style="width:430px;height:500px;float:left;"></div>
+            <div ng-if="iconChartObject.length">
+                <div style="padding: 20px; font-size: 60px; background-color: whitesmoke; border-bottom: 1px solid #c1c1c1;">{{iconChartObject}}</div>
+            </div>
+            <div ng-if="!iconChartObject.length" style="height:500px;">
+                <div google-chart chart="iconChartObject.chart1" style="width:430px;height:500px;float:left;"></div>
+                <div google-chart chart="iconChartObject.chart2" style="width:430px;height:500px;float:left;"></div>
+                <div google-chart chart="iconChartObject.chart3" style="width:430px;height:500px;float:left;"></div>
+                <div google-chart chart="iconChartObject.chart4" style="width:430px;height:500px;float:left;"></div>
+            </div>
         </div>
     </div>
 </div>
