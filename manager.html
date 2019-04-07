@@ -90,7 +90,9 @@
                 }
                 http
                     .get('https://api.vietstock.vn/ta/history?symbol='+iconChartObject.icon+'&resolution=&from=' + from + '&to=' + nowEpoch + '&date=').then(function (respData) {
-                    var baseline = (forDays>70 || forDays === null)?0:null;
+                    var minValue = (forDays>70 || forDays === null)?0:null;
+                    var baselineColor = 'red';
+
                     angular.extend(iconChartObjectRef, {
                             "type": "LineChart",
                             "displayed": false,
@@ -112,7 +114,7 @@
                             },
                             "options": {
                                 "title": iconChartObject.icon.toUpperCase(),
-                                "isStacked": "true",
+                                // "isStacked": "true",
                                 "fill": 20,
                                 "displayExactValues": true,
                                 "vAxis": {
@@ -120,8 +122,9 @@
                                     // "gridlines": {
                                     //     "count": 10
                                     // }
-                                    "minValue": buyAt,
-                                    baseline: (baseline)
+                                    baseline: (buyAt),
+                                    baselineColor: baselineColor,
+                                    "minValue": minValue,
                                 },
                                 "hAxis": {
                                     "title": "Time"
@@ -148,15 +151,20 @@
                     });
                 });
             };
+            function getBuyPoint(iconChartObject){
+                switch (iconChartObject.icon) {
+                    case 'VIC':return 80e3;
+                }
+            }
             scope.iconChartObjects.map(function (iconChartObject) {
                 iconChartObject.chart1 = {};
                 iconChartObject.chart2 = {};
                 iconChartObject.chart3 = {};
                 iconChartObject.chart4 = {};
-                returnIconChartObjects(iconChartObject,iconChartObject.chart1);
-                returnIconChartObjects(iconChartObject,iconChartObject.chart2, 360);
-                returnIconChartObjects(iconChartObject,iconChartObject.chart3, 60);
-                returnIconChartObjects(iconChartObject,iconChartObject.chart4, 30);
+                returnIconChartObjects(iconChartObject,iconChartObject.chart1,null, getBuyPoint(iconChartObject));
+                returnIconChartObjects(iconChartObject,iconChartObject.chart2, 360, getBuyPoint(iconChartObject));
+                returnIconChartObjects(iconChartObject,iconChartObject.chart3, 60, getBuyPoint(iconChartObject));
+                returnIconChartObjects(iconChartObject,iconChartObject.chart4, 30, getBuyPoint(iconChartObject));
             })
         });
     </script>
