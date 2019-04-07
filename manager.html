@@ -28,7 +28,7 @@
                         "date":"Fri Mar 13 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"VJC","price_buyAt":119400,"calculateExpectedInterested":"1.01741351","calculateDiffInDaysHuman":"21.18643884","calculateActualInterested":121500
                     }
                 ],
-                "expected_interested":30
+                "expected_interested":50
             };
             scope.localStorage.expected_interested = scope.localStorage.expected_interested || 30;
             scope.$watch('localStorage', function (newVal, oldVal) {
@@ -163,18 +163,18 @@
             };
             function getBuyPoint(iconChartObject){
                 switch (iconChartObject.icon) {
-                    case 'VIC':return 104000;
-                    case 'VHM':return 104000;
-                    case 'VRE':return 31450;
-                    case 'MWG':return 78500;
-                    case 'ACB':return 26000;
-                    case 'KDH':return 27800;
-                    case 'MBB':return 18100;
-                    case 'SAB':return 233300;
-                    case 'HPG':return 28900;
-                    case 'VNM':return 11500;
-                    case 'DXG':return 20100;
-                    case 'FPT':return 37900;
+                    case 'VIC':return 98800;
+                    case 'VHM':return 74200;
+                    case 'VRE':return 31000;
+                    case 'MWG':return 83000;
+                    case 'ACB':return 29000;
+                    case 'KDH':return 29400;
+                    case 'MBB':return 19200;
+                    case 'SAB':return 224000;
+                    case 'HPG':return 31400;
+                    case 'VNM':return 125100;
+                    case 'DXG':return 22750;
+                    case 'FPT':return 42500;
                 }
             }
             scope.iconChartObjects.map(function (iconChartObject) {
@@ -225,10 +225,10 @@
     <div>Market</div>
     <div>
         <div ng-repeat="iconChartObject in iconChartObjects">
-            <div google-chart chart="iconChartObject.chart1" style="width:430px;float:left;"></div>
-            <div google-chart chart="iconChartObject.chart2" style="width:430px;float:left;"></div>
-            <div google-chart chart="iconChartObject.chart3" style="width:430px;float:left;"></div>
-            <div google-chart chart="iconChartObject.chart4" style="width:430px;float:left;"></div>
+            <div google-chart chart="iconChartObject.chart1" style="width:430px;height:500px;float:left;"></div>
+            <div google-chart chart="iconChartObject.chart2" style="width:430px;height:500px;float:left;"></div>
+            <div google-chart chart="iconChartObject.chart3" style="width:430px;height:500px;float:left;"></div>
+            <div google-chart chart="iconChartObject.chart4" style="width:430px;height:500px;float:left;"></div>
         </div>
     </div>
 </div>
