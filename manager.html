@@ -14,12 +14,22 @@
         app.controller('myCtrl', function ($scope, $http, $interval) {
             var scope = $scope;
             var http = $http;
-            if(window.localStorage.angular){
-                scope.localStorage = JSON.parse(window.localStorage.angular);
-            }else{
-                scope.localStorage = {};
-                window.localStorage.angular = '{"portfolio":[{"date":"Fri Mar 13 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"VJC","price_buyAt":119400,"calculateExpectedInterested":"1.01741351","calculateDiffInDaysHuman":"21.18643884","calculateActualInterested":121500},{"date":"Fri Mar 22 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"DXG","price_buyAt":228000,"calculateExpectedInterested":"1.01001625","calculateDiffInDaysHuman":"12.18643884","calculateActualInterested":230300}],"expected_interested":30}';
-            }
+            // if(false){
+            // }else{
+                // scope.localStorage = {};
+                // window.localStorage.angular = '{"portfolio":[' +
+                //     '{"date":"Fri Mar 13 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"VJC","price_buyAt":119400,"calculateExpectedInterested":"1.01741351","calculateDiffInDaysHuman":"21.18643884","calculateActualInterested":121500}' +
+                //     '],"expected_interested":30}';
+            // }
+            // scope.localStorage = JSON.parse(window.localStorage.angular);
+            scope.localStorage = {
+                "portfolio": [
+                    {
+                        "date":"Fri Mar 13 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"VJC","price_buyAt":119400,"calculateExpectedInterested":"1.01741351","calculateDiffInDaysHuman":"21.18643884","calculateActualInterested":121500
+                    }
+                ],
+                "expected_interested":30
+            };
             scope.localStorage.expected_interested = scope.localStorage.expected_interested || 30;
             scope.$watch('localStorage', function (newVal, oldVal) {
                 window.localStorage.angular = JSON.stringify(angular.copy(newVal));
@@ -153,7 +163,18 @@
             };
             function getBuyPoint(iconChartObject){
                 switch (iconChartObject.icon) {
-                    case 'VIC':return 80e3;
+                    case 'VIC':return 104000;
+                    case 'VHM':return 104000;
+                    case 'VRE':return 31450;
+                    case 'MWG':return 78500;
+                    case 'ACB':return 26000;
+                    case 'KDH':return 27800;
+                    case 'MBB':return 18100;
+                    case 'SAB':return 233300;
+                    case 'HPG':return 28900;
+                    case 'VNM':return 11500;
+                    case 'DXG':return 20100;
+                    case 'FPT':return 37900;
                 }
             }
             scope.iconChartObjects.map(function (iconChartObject) {
