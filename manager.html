@@ -167,6 +167,9 @@
 
                     var jsonData = respData.data;
                     var iconData = JSON.parse(jsonData);
+                    iconData.c = iconData.c.map(function(c){
+                        return (c > 1000)?c:(c*1000);
+                    });
                     iconChartObjectRef.data.rows = iconData.c.map(function (c) {
                         var cRows = [
                             {
@@ -218,6 +221,11 @@
                     case 'EIB':return 15000;
                     case 'QNS':return 40200;
                     case 'VJC':return 112800;
+                    case 'ACV':return 83500;
+                    case 'PNJ':return 93800;
+                    case 'CTD':return 140900;
+                    case 'POW':return 14900;
+                    case 'BVH':return 79500;
                 }
             }
             scope.iconChartObjects.map(function (iconChartObject) {
@@ -272,10 +280,10 @@
                 <div style="padding: 20px; font-size: 60px; background-color: whitesmoke; border-bottom: 1px solid #c1c1c1;">{{iconChartObject}}</div>
             </div>
             <div ng-if="!iconChartObject.length" style="height:500px;">
-                <div google-chart chart="iconChartObject.chart1" style="width:430px;height:500px;float:left;"></div>
+                <div google-chart chart="iconChartObject.chart1" style="width:630px;height:500px;float:left;"></div>
                 <div google-chart chart="iconChartObject.chart2" style="width:430px;height:500px;float:left;"></div>
                 <div google-chart chart="iconChartObject.chart3" style="width:430px;height:500px;float:left;"></div>
-                <div google-chart chart="iconChartObject.chart4" style="width:430px;height:500px;float:left;"></div>
+                <div google-chart chart="iconChartObject.chart4" style="width:330px;height:500px;float:left;"></div>
             </div>
         </div>
     </div>
