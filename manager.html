@@ -111,6 +111,23 @@
                 {"icon": "NVL",},
                 {"icon": "VRE",},
                 {"icon": "BVH",},
+                // 'JP.Morgan',
+                // {"icon": "VCB",},
+                // {"icon": "MSN",},
+                // {"icon": "VNM",},
+                // {"icon": "GAS",},
+                // {"icon": "VIC",},
+                // 'LionGlobal',
+                // {"icon": "MSN",},
+                // {"icon": "VIC",},
+                // {"icon": "HPG",},
+                // {"icon": "HAG",},
+                // {"icon": "VCB",},
+                // {"icon": "PVD",},
+                // {"icon": "KBC",},
+                // {"icon": "STB",},
+                // {"icon": "MWG",},
+                // {"icon": "BVH",},
             ];
             var returnIconChartObjects = function (iconChartObject, iconChartObjectRef, forDays, buyAt) {
                 if(typeof iconChartObject.icon === 'undefined'){return;}
@@ -123,7 +140,7 @@
                 }else{
                     from = (nowEpoch - forDays * 86400);
                 }
-                var cacheKey = 'stock_' + iconChartObject.icon + '_' + (new Date).toDateString().replace(' ', '.');
+                var cacheKey = 'stock_' + iconChartObject.icon + '_' + (new Date).toDateString().replace(' ', '.') + '_' + (new Date(from * 1000)).toDateString();
                 var handleRespData = function (respData) {
                 var minValue = (forDays>70 || forDays === null)?0:null;
                 var baselineColor = 'black';
