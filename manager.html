@@ -26,7 +26,10 @@
                 "portfolio": [
                     {
                         "date":"Fri Mar 13 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"VJC","price_buyAt":119400,"calculateExpectedInterested":"1.01741351","calculateDiffInDaysHuman":"21.18643884","calculateActualInterested":121500
-                    }
+                    },
+                    {
+                        "date":"Fri Feb 09 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"MWG","price_buyAt":841e2,"calculateExpectedInterested":"1.01741351","calculateDiffInDaysHuman":"21.18643884","calculateActualInterested":121500
+                    },
                 ],
                 "expected_interested":100
             };
@@ -119,88 +122,89 @@
                 }else{
                     from = (nowEpoch - forDays * 86400);
                 }
-                http
-                    .get('https://api.vietstock.vn/ta/history?symbol='+iconChartObject.icon+'&resolution=&from=' + from + '&to=' + nowEpoch + '&date=').then(function (respData) {
-                    var minValue = (forDays>70 || forDays === null)?0:null;
-                    var baselineColor = 'black';
+                var handleRespData = function (respData) {
+                var minValue = (forDays>70 || forDays === null)?0:null;
+                var baselineColor = 'black';
 
-                    angular.extend(iconChartObjectRef, {
-                            "type": "LineChart",
-                            "displayed": false,
-                            "data": {
-                                "cols": [
-                                    {
-                                        "id": "month",
-                                        "label": "Month",
-                                        "type": "string",
-                                        "p": {}
-                                    },
-                                    {
-                                        "id": "price",
-                                        "label": "Price",
-                                        "type": "number"
-                                    }
-                                ],
-                                "rows": [],
-                            },
-                            "options": {
-                                "title": iconChartObject.icon.toUpperCase(),
-                                // "isStacked": "true",
-                                "fill": 20,
-                                "displayExactValues": true,
-                                "vAxis": {
-                                    "title": "Price",
-                                    // "gridlines": {
-                                    //     "count": 10
-                                    // }
-                                    baseline: (buyAt),
-                                    baselineColor: baselineColor,
-                                    "minValue": minValue,
+                angular.extend(iconChartObjectRef, {
+                        "type": "LineChart",
+                        "displayed": false,
+                        "data": {
+                            "cols": [
+                                {
+                                    "id": "month",
+                                    "label": "Month",
+                                    "type": "string",
+                                    "p": {}
                                 },
-                                "hAxis": {
-                                    "title": "Time"
+                                {
+                                    "id": "price",
+                                    "label": "Price",
+                                    "type": "number"
                                 }
+                            ],
+                            "rows": [],
+                        },
+                        "options": {
+                            "title": iconChartObject.icon.toUpperCase(),
+                            // "isStacked": "true",
+                            "fill": 20,
+                            "displayExactValues": true,
+                            "vAxis": {
+                                "title": "Price",
+                                // "gridlines": {
+                                //     "count": 10
+                                // }
+                                baseline: (buyAt),
+                                baselineColor: baselineColor,
+                                "minValue": minValue,
                             },
-                            "formatters": {}
-                        }
-                    );
-
-                    var jsonData = respData.data;
-                    var iconData = JSON.parse(jsonData);
-                    iconData.c = iconData.c.map(function(c){
-                        return (c > 1000)?c:(c*1000);
-                    });
-                    iconChartObjectRef.data.rows = iconData.c.map(function (c) {
-                        var cRows = [
-                            {
-                                "v": c
+                            "hAxis": {
+                                "title": "Time"
                             }
-                        ];
-                        cRows.unshift({
-                            "v": "Price"
-                        });
-                        return {
-                            "c": cRows
-                        };
-                    });
-                    var lastPrice = iconData.c[iconData.c.length - 1];
-                    var lastPriceOnBuyAt = Math.round(lastPrice / buyAt * 100 * 100) / 100;
-                    if(lastPriceOnBuyAt < 103) {
-                        iconChartObjectRef.options.vAxis.baselineColor = 'green';
-                        iconChartObjectRef.options.titleTextStyle = {
-                            color:'green',
-                            fontSize:20
-                        };
+                        },
+                        "formatters": {}
                     }
-                    if(lastPriceOnBuyAt > 110) {
-                        iconChartObjectRef.options.vAxis.baselineColor = 'red';
-                        iconChartObjectRef.options.titleTextStyle = {
-                            color:'red',
-                        };
-                    }
-                    iconChartObjectRef.options.title += (' - (' + lastPriceOnBuyAt + '%)');
+                );
 
+                var jsonData = respData.data;
+                var iconData = JSON.parse(jsonData);
+                iconData.c = iconData.c.map(function(c){
+                    return (c > 1000)?c:(c*1000);
                 });
+                iconChartObjectRef.data.rows = iconData.c.map(function (c) {
+                    var cRows = [
+                        {
+                            "v": c
+                        }
+                    ];
+                    cRows.unshift({
+                        "v": "Price"
+                    });
+                    return {
+                        "c": cRows
+                    };
+                });
+                var lastPrice = iconData.c[iconData.c.length - 1];
+                var lastPriceOnBuyAt = Math.round(lastPrice / buyAt * 100 * 100) / 100;
+                if(lastPriceOnBuyAt < 103) {
+                    iconChartObjectRef.options.vAxis.baselineColor = 'green';
+                    iconChartObjectRef.options.titleTextStyle = {
+                        color:'green',
+                        fontSize:20
+                    };
+                }
+                if(lastPriceOnBuyAt > 110) {
+                    iconChartObjectRef.options.vAxis.baselineColor = 'red';
+                    iconChartObjectRef.options.titleTextStyle = {
+                        color:'red',
+                    };
+                }
+                iconChartObjectRef.options.title += (' - (' + lastPriceOnBuyAt + '%)');
+
+            };
+                http
+                    .get('https://api.vietstock.vn/ta/history?symbol='+iconChartObject.icon+'&resolution=&from=' + from + '&to=' + nowEpoch + '&date=').then(handleRespData);
             };
             function getBuyPoint(iconChartObject){
                 switch (iconChartObject.icon) {
