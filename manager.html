@@ -113,6 +113,7 @@
                 {"icon": "BVH",},
             ];
             var returnIconChartObjects = function (iconChartObject, iconChartObjectRef, forDays, buyAt) {
+                if(typeof iconChartObject.icon === 'undefined'){return;}
                 var nowEpoch = Math.round(Date.now().valueOf()/1000);
                 var from;
                 buyAt = buyAt || null;
@@ -122,6 +123,7 @@
                 }else{
                     from = (nowEpoch - forDays * 86400);
                 }
+                var cacheKey = 'stock_' + iconChartObject.icon + '_' + (new Date).toDateString().replace(' ', '.');
                 var handleRespData = function (respData) {
                 var minValue = (forDays>70 || forDays === null)?0:null;
                 var baselineColor = 'black';
@@ -201,10 +203,17 @@
                     };
                 }
                 iconChartObjectRef.options.title += (' - (' + lastPriceOnBuyAt + '%)');
+                localStorage[cacheKey] = JSON.stringify(respData);
 
             };
+                if(typeof localStorage[cacheKey] === 'undefined')
                 http
-                    .get('https://api.vietstock.vn/ta/history?symbol='+iconChartObject.icon+'&resolution=&from=' + from + '&to=' + nowEpoch + '&date=').then(handleRespData);
+                    .get('https://api.vietstock.vn/ta/history?symbol='+iconChartObject.icon+'&resolution=&from=' + from + '&to=' + nowEpoch + '&date=')
+                    .then(function (respData) {
+                        handleRespData(respData);
+                    });
+                else
+                    handleRespData(JSON.parse(localStorage[cacheKey]));
             };
             function getBuyPoint(iconChartObject){
                 switch (iconChartObject.icon) {
