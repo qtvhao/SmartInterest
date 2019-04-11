@@ -31,7 +31,7 @@
                         "date":"Fri Feb 09 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"MWG","price_buyAt":841e2,"calculateExpectedInterested":"1.01741351","calculateDiffInDaysHuman":"21.18643884","calculateActualInterested":121500
                     },
                 ],
-                "expected_interested":100
+                "expected_interested":50
             };
             scope.localStorage.expected_interested = scope.localStorage.expected_interested || 30;
             scope.$watch('localStorage', function (newVal, oldVal) {
@@ -130,6 +130,14 @@
                 // {"icon": "BVH",},
             ];
             var returnIconChartObjects = function (iconChartObject, iconChartObjectRef, forDays, buyAt) {
+                var portfolioItemIcons = scope.localStorage.portfolio.filter(function (portfolio_item) {
+                    return portfolio_item.icon === iconChartObject.icon;
+                });
+                if(portfolioItemIcons.length > 0) {
+                    var portfolioItemSelected = portfolioItemIcons[0];
+                    var timeBought = (new Date(portfolioItemSelected.date)).getTime() / 1e3;
+                    var priceBuyAt = portfolioItemSelected.price_buyAt;
+                }
                 if(typeof iconChartObject.icon === 'undefined'){return;}
                 var nowEpoch = Math.round(Date.now().valueOf()/1000);
                 var from;
@@ -159,6 +167,11 @@
                                 {
                                     "id": "price",
                                     "label": "Price",
+                                    "type": "number"
+                                },
+                                {
+                                    "id": "sale_at",
+                                    "label": "Sale at",
                                     "type": "number"
                                 }
                             ],
@@ -191,11 +204,23 @@
                 iconData.c = iconData.c.map(function(c){
                     return (c > 1000)?c:(c*1000);
                 });
-                iconChartObjectRef.data.rows = iconData.c.map(function (c) {
+                iconChartObjectRef.data.rows = iconData.c.map(function (c, i) {
+                    var stockTime = iconData.t[i];
+                    var v = c;
+                    if(stockTime > timeBought) {
+                        var diffInDays = (stockTime - timeBought) / 86400;
+                        console.log(diffInDays);
+                        var expectedInterested = ((scope.localStorage.expected_interested / 365) * (diffInDays + 6) + 100) / 100;
+                        var expectedSoldAt = expectedInterested * priceBuyAt;
+                        v = expectedSoldAt;
+                    }
                     var cRows = [
                         {
-                            "v": c
-                        }
+                            "v": c,
+                        },
+                        {
+                            "v": v
+                        },
                     ];
                     cRows.unshift({
                         "v": "Price"
