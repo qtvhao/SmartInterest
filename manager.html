@@ -209,7 +209,6 @@
                     var v = c;
                     if(stockTime > timeBought) {
                         var diffInDays = (stockTime - timeBought) / 86400;
-                        console.log(diffInDays);
                         var expectedInterested = ((scope.localStorage.expected_interested / 365) * (diffInDays + 6) + 100) / 100;
                         var expectedSoldAt = expectedInterested * priceBuyAt;
                         v = expectedSoldAt;
@@ -231,6 +230,20 @@
                 });
                 var lastPrice = iconData.c[iconData.c.length - 1];
                 var lastPriceOnBuyAt = Math.round(lastPrice / buyAt * 100 * 100) / 100;
+                    for (var i = 1 ; i<100;i++) {
+                        (function (i) {
+                            if(forDays !== null){return;}
+                            var expectedInterested = ((scope.localStorage.expected_interested / 365) * (i + 6) + 100) / 100;
+                            var expectedSoldAt = expectedInterested * lastPrice;
+                            iconChartObjectRef.data.rows.push({
+                                c:[
+                                    {v:"Price"},
+                                    {v:expectedSoldAt},
+                                    {v:null},
+                                ]
+                            })
+                        })(i);
+                    }
                 if(lastPriceOnBuyAt < 103) {
                     iconChartObjectRef.options.vAxis.baselineColor = 'green';
                     iconChartObjectRef.options.titleTextStyle = {
