@@ -250,6 +250,10 @@
                         color:'green',
                         fontSize:20
                     };
+                }else{
+                    iconChartObjectRef.data.rows = [];
+                    iconChartObject.isHidden = true;
+                    iconChartObjectRef.isHidden = true;
                 }
                 if(lastPriceOnBuyAt > 110) {
                     iconChartObjectRef.options.vAxis.baselineColor = 'red';
@@ -347,7 +351,7 @@
             <div ng-if="iconChartObject.length">
                 <div style="padding: 20px; font-size: 60px; background-color: whitesmoke; border-bottom: 1px solid #c1c1c1;">{{iconChartObject}}</div>
             </div>
-            <div ng-if="!iconChartObject.length" style="height:500px;">
+            <div ng-if="!iconChartObject.length" ng-hide="iconChartObject.isHidden" style="height:500px;">
                 <div google-chart chart="iconChartObject.chart1" style="width:630px;height:500px;float:left;"></div>
                 <div google-chart chart="iconChartObject.chart2" style="width:430px;height:500px;float:left;"></div>
                 <div google-chart chart="iconChartObject.chart3" style="width:430px;height:500px;float:left;"></div>
