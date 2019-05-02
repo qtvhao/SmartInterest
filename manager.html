@@ -31,7 +31,8 @@
                         "date":"Fri Apr 24 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"CTD","price_buyAt":120836,"calculateExpectedInterested":"1.01741351","calculateDiffInDaysHuman":"21.18643884","calculateActualInterested":121500
                     },
                 ],
-                "expected_interested":50
+                "expected_interested":50,
+                showAllOfIcons:1
             };
             scope.localStorage.expected_interested = scope.localStorage.expected_interested || 30;
             scope.$watch('localStorage', function (newVal, oldVal) {
@@ -244,7 +245,8 @@
                             })
                         })(i);
                     }
-                if(lastPriceOnBuyAt < 103) {
+                    console.log(typeof scope.localStorage.showAllOfIcons);
+                if(lastPriceOnBuyAt < 103 || scope.localStorage.showAllOfIcons===1) {
                     iconChartObjectRef.options.vAxis.baselineColor = 'green';
                     iconChartObjectRef.options.titleTextStyle = {
                         color:'green',
@@ -315,6 +317,13 @@
 </head>
 <body ng-app="myApp" ng-controller="myCtrl">
 <div>
+    <div>
+        <div ng-show="localStorage.showAllOfIcons==0">
+            localStorage.showAllOfIcons==0
+        </div>
+        <button ng-click="localStorage.showAllOfIcons=0">hideAllOfIcons</button>
+        <button ng-click="localStorage.showAllOfIcons=1">showAllOfIcons</button>
+    </div>
     <div>
         <input type="number" ng-model="localStorage.expected_interested"> % expected interested
     </div>
