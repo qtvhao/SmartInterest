@@ -28,10 +28,10 @@
                     //     "date":"Fri Mar 13 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"VJC","price_buyAt":119400,"calculateExpectedInterested":"1.01741351","calculateDiffInDaysHuman":"21.18643884","calculateActualInterested":121500
                     // },
                     {
-                        "date":"Fri Apr 24 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"CTD","price_buyAt":120436,"calculateExpectedInterested":"1.01741351","calculateDiffInDaysHuman":"21.18643884","calculateActualInterested":121500
+                        "date":"Fri Apr 24 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"CTD","price_buyAt":120836,"calculateExpectedInterested":"1.01741351","calculateDiffInDaysHuman":"21.18643884","calculateActualInterested":121500
                     },
                     {
-                        "date":"Fri May 03 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"DXG","price_buyAt":19968,"calculateExpectedInterested":"1.01741351","calculateDiffInDaysHuman":"21.18643884","calculateActualInterested":121500
+                        "date":"Fri May 03 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"DXG","price_buyAt":20700,"calculateExpectedInterested":"1.01741351","calculateDiffInDaysHuman":"21.18643884","calculateActualInterested":121500
                     },
                 ],
                 "expected_interested":50,
@@ -80,7 +80,61 @@
             };
 
 
-            scope.iconChartObjects = [];
+            scope.iconChartObjects = [
+                'VinGroup',
+                {"icon": "VIC",},
+                {"icon": "VHM",},
+                {"icon": "VRE",},
+                'DragonCapital',
+                {"icon": "MWG",},
+                {"icon": "VHM",},
+                {"icon": "ACB",},
+                {"icon": "KDH",},
+                {"icon": "MBB",},
+                {"icon": "HPG",},
+                {"icon": "SAB",},
+                {"icon": "GAS",},
+                {"icon": "FPT",},
+                {"icon": "VNM",},
+                // {"icon": "DXG",},
+                'VOF',
+                {"icon": "HPG",},
+                {"icon": "KDH",},
+                {"icon": "ACV",},
+                {"icon": "VNM",},
+                {"icon": "PNJ",},
+                {"icon": "EIB",},
+                {"icon": "QNS",},
+                {"icon": "CTD",},
+                {"icon": "VJC",},
+                {"icon": "POW",},
+                {"icon": "HDB",},
+/*                'VNM - VanEck Vectors Vietnam ETF',
+                {"icon": "VIC",},
+                {"icon": "VNM",},
+                {"icon": "VHM",},
+                {"icon": "VCB",},
+                {"icon": "NVL",},
+                {"icon": "VRE",},
+                {"icon": "BVH",},*/
+                // 'JP.Morgan',
+                // {"icon": "VCB",},
+                // {"icon": "MSN",},
+                // {"icon": "VNM",},
+                // {"icon": "GAS",},
+                // {"icon": "VIC",},
+                // 'LionGlobal',
+                // {"icon": "MSN",},
+                // {"icon": "VIC",},
+                // {"icon": "HPG",},
+                // {"icon": "HAG",},
+                // {"icon": "VCB",},
+                // {"icon": "PVD",},
+                // {"icon": "KBC",},
+                // {"icon": "STB",},
+                // {"icon": "MWG",},
+                // {"icon": "BVH",},
+            ];
             var returnIconChartObjects = function (iconChartObject, iconChartObjectRef, forDays, buyAt) {
                 var portfolioItemIcons = scope.localStorage.portfolio.filter(function (portfolio_item) {
                     return portfolio_item.icon === iconChartObject.icon;
