@@ -80,7 +80,11 @@
             };
 
 
-            scope.iconChartObjects = [];
+            scope.iconChartObjects = [
+                'Misc',
+                {"icon": "DXG",},
+                {"icon": "CTD",},
+            ];
             var returnIconChartObjects = function (iconChartObject, iconChartObjectRef, forDays, buyAt) {
                 var portfolioItemIcons = scope.localStorage.portfolio.filter(function (portfolio_item) {
                     return portfolio_item.icon === iconChartObject.icon;
@@ -287,7 +291,7 @@
             <input type="text" ng-model="portfolio_item.icon" placeholder="new_portfolio_item_icon">
             Buy at: <input type="number" ng-model="portfolio_item.price_buyAt" placeholder="price_buyAt">
 <!--            <input type="number" ng-model="portfolio_item.price_soldAt" placeholder="price_soldAt">-->
-            Interested: {{portfolio_item.calculateExpectedInterested}} % -
+            Interested: {{(portfolio_item.calculateExpectedInterested * 100 % 100)|number:6}} % -
             After days: <input type="text" ng-value="portfolio_item.calculateDiffInDaysHuman">
             Sold at: <input type="text" ng-value="portfolio_item.calculateActualInterested">
         </div>
