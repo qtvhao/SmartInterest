@@ -222,14 +222,12 @@
                     iconChartObject.isHidden = true;
                     iconChartObjectRef.isHidden = true;
                 }
-                if(lastPriceOnBuyAt > 110) {
+                    iconChartObjectRef.options.vAxis.baseline = iconChartObjectRef.data.rows[(iconChartObjectRef.data.rows.length - 1)].c[2].v;
                     iconChartObjectRef.options.vAxis.baselineColor = 'red';
                     iconChartObjectRef.options.titleTextStyle = {
                         color:'red',
                     };
-                }
                 iconChartObjectRef.options.title += (' - (' + lastPriceOnBuyAt + '%)');
-                localStorage[cacheKey] = JSON.stringify(respData);
 
             };
                 if(typeof localStorage[cacheKey] === 'undefined')
@@ -321,6 +319,12 @@
 
 <div>
     <div>Market</div>
+    <div>
+        <img src="http://cafefcdn.com/thumb_w/640/2019/2/4/1-15492700287171003133110.png" style="max-width: 100%;" alt="">
+        <div>
+            07-02-2019 - 08:45 AM | Thị trường chứng khoán
+        </div>
+    </div>
     <div>
         <div ng-repeat="iconChartObject in iconChartObjects">
             <div ng-if="iconChartObject.length">
