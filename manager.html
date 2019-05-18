@@ -1,6 +1,7 @@
 <!doctype html>
 <html>
 <head>
+    <meta charset="utf-8">
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
 
@@ -36,10 +37,10 @@
                     //     "date":"Fri Mar 13 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"VJC","price_buyAt":119400,"calculateExpectedInterested":"1.01741351","calculateDiffInDaysHuman":"21.18643884","calculateActualInterested":121500
                     // },
                     {
-                        "date":"Fri Apr 24 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"CTD","price_buyAt":120436,"expectedInterestedInYear":70,
+                        "date":"Fri Apr 24 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"CTD","price_buyAt":120436,"expectedInterestedInYear":100,
                     },
                     {
-                        "date":"Fri May 03 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"DXG","price_buyAt":19968,"expectedInterestedInYear":30,
+                        "date":"Fri May 03 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"DXG","price_buyAt":19968,"expectedInterestedInYear":100,
                     },
                 ],
                 "expected_interested":50,
@@ -324,7 +325,17 @@
         <div>
             07-02-2019 - 08:45 AM | Thị trường chứng khoán
         </div>
+        <div style="clear:both"></div>
+        <div style="width: 6000px;">
+            <div style="width: 50%;float:left"><img style="width: 100%" src="static/big-10.png" alt=""></div>
+            <div style="width: 30%;float:left"><img style="width: 100%" src="static/big-10-20.png" alt=""></div>
+            <div style="width: 20%;float:left"><img style="width: 100%" src="static/big-20-30.png" alt=""></div>
+        </div>
+        <div>
+            <img style="width: 1500px" src="static/big30.png" alt="">
+        </div>
     </div>
+    <div style="clear:both"></div>
     <div>
         <div ng-repeat="iconChartObject in iconChartObjects">
             <div ng-if="iconChartObject.length">
