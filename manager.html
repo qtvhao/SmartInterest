@@ -33,14 +33,17 @@
             // scope.localStorage = JSON.parse(window.localStorage.angular);
             scope.localStorage = {
                 "portfolio": [
-                    // {
-                    //     "date":"Fri Mar 13 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"VJC","price_buyAt":119400,"calculateExpectedInterested":"1.01741351","calculateDiffInDaysHuman":"21.18643884","calculateActualInterested":121500
-                    // },
+                    {
+                        "date":"Fri Mar 13 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"VJC","price_buyAt":119400,"calculateExpectedInterested":"1.01741351","calculateDiffInDaysHuman":"21.18643884","calculateActualInterested":121500
+                    },
                     {
                         "date":"Fri Apr 24 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"CTD","price_buyAt":120436,"expectedInterestedInYear":100,
                     },
                     {
                         "date":"Fri May 03 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"DXG","price_buyAt":19968,"expectedInterestedInYear":100,
+                    },
+                    {
+                        "date":"Fri May 17 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"VHM","price_buyAt":86300,"expectedInterestedInYear":100,
                     },
                 ],
                 "expected_interested":50,
@@ -59,6 +62,8 @@
                         portfolio_item.calculateExpectedInterested = scope.calculateExpectedInterested(portfolio_item);
                         portfolio_item.calculateDiffInDaysHuman = scope.calculateDiffInDaysHuman(portfolio_item);
                         portfolio_item.calculateActualInterested = scope.calculateActualInterested(portfolio_item);
+                        portfolio_item.calculateDca = scope.calculateDca(portfolio_item);
+
                         return portfolio_item;
                     });
             }, 5e2);
@@ -83,6 +88,9 @@
                 var expectedInterested = ((generalExpectedInterested / 365) * (diffInDaysHuman + 6) + 100) / 100;
                 return expectedInterested.toFixed(8);
             };
+            scope.calculateDca = function(portfolio_item) {
+                return Math.round((Number(portfolio_item.price_buyAt) * 93/100)/100) * 100;
+            };
             scope.calculateActualInterested = function (portfolio_item) {
                 var expectedInterestAfterDays = scope.calculateExpectedInterested(portfolio_item);
                 var expectedSoldAt = expectedInterestAfterDays * portfolio_item.price_buyAt;
@@ -92,9 +100,10 @@
 
             scope.iconChartObjects = [
                 // 'Misc',
-                // {"icon": "DXG",},
-                // {"icon": "CTD",},
-                // {"icon": "VJC",},
+                {"icon": "DXG",},
+                {"icon": "CTD",},
+                {"icon": "BVH",},
+                {"icon": "VJC",},
             ];
             var returnIconChartObjects = function (iconChartObject, iconChartObjectRef, forDays, buyAt) {
                 var portfolioItemIcons = scope.localStorage.portfolio.filter(function (portfolio_item) {
@@ -212,6 +221,7 @@
                         })(i);
                     }
                     console.log(typeof scope.localStorage.showAllOfIcons);
+                    iconChartObjectRef.dcaAt = lastPrice * 97 / 100;
                 if(lastPriceOnBuyAt < 103 || scope.localStorage.showAllOfIcons===1) {
                     iconChartObjectRef.options.vAxis.baselineColor = 'green';
                     iconChartObjectRef.options.titleTextStyle = {
@@ -304,6 +314,7 @@
             Interested: {{(portfolio_item.calculateExpectedInterested * 100 % 100)|number:8}} % -
             After days: <input type="text" ng-value="portfolio_item.calculateDiffInDaysHuman">
             <strong style="color:darkgreen">Sold at</strong>: <input type="text" ng-value="portfolio_item.calculateActualInterested">
+            <strong style="color:#ff005f">DCA </strong>: <input type="text" ng-value="portfolio_item.calculateDca">
         </div>
     </div>
     <hr>
@@ -334,6 +345,9 @@
         <div>
             <img style="width: 1500px" src="static/big30.png" alt="">
         </div>
+        <div>
+            <img style="width: 1500px" src="static/price-model.png" alt="">
+        </div>
     </div>
     <div style="clear:both"></div>
     <div>
@@ -342,6 +356,9 @@
                 <div style="padding: 20px; font-size: 60px; background-color: whitesmoke; border-bottom: 1px solid #c1c1c1;">{{iconChartObject}}</div>
             </div>
             <div ng-if="!iconChartObject.length" ng-hide="iconChartObject.isHidden" style="height:500px;">
+                <div>
+                    {{iconChartObject.chart1.dcaAt}}
+                </div>
                 <div google-chart chart="iconChartObject.chart1" style="width:630px;height:500px;float:left;"></div>
                 <div google-chart chart="iconChartObject.chart2" style="width:430px;height:500px;float:left;"></div>
                 <div google-chart chart="iconChartObject.chart3" style="width:430px;height:500px;float:left;"></div>
