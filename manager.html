@@ -34,16 +34,19 @@
             scope.localStorage = {
                 "portfolio": [
                     {
-                        "date":"Fri Mar 13 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"VJC","price_buyAt":119400,"calculateExpectedInterested":"1.01741351","calculateDiffInDaysHuman":"21.18643884","calculateActualInterested":121500
+                        "date":"Fri Mar 13 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"VJC","price_buyAt":119400,"expectedInterestedInYear":10,
                     },
                     {
-                        "date":"Fri Apr 24 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"CTD","price_buyAt":120436,"expectedInterestedInYear":100,
+                        "date":"Fri Apr 24 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"CTD","price_buyAt":119725,"expectedInterestedInYear":10,
                     },
                     {
-                        "date":"Fri May 03 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"DXG","price_buyAt":19968,"expectedInterestedInYear":100,
+                        "date":"Fri May 03 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"DXG","price_buyAt":19958,"expectedInterestedInYear":10,
                     },
                     {
-                        "date":"Fri May 17 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"VHM","price_buyAt":86300,"expectedInterestedInYear":100,
+                        "date":"Fri May 17 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"VHM","price_buyAt":86326,"expectedInterestedInYear":10,
+                    },
+                    {
+                        "date":"Fri May 21 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"VRE","price_buyAt":35940,"expectedInterestedInYear":10,
                     },
                 ],
                 "expected_interested":50,
@@ -100,10 +103,11 @@
 
             scope.iconChartObjects = [
                 // 'Misc',
-                {"icon": "DXG",},
+                {"icon": "DXG",},//"from":1506387863
                 {"icon": "CTD",},
                 {"icon": "BVH",},
                 {"icon": "VJC",},
+                {"icon": "VRE",},
             ];
             var returnIconChartObjects = function (iconChartObject, iconChartObjectRef, forDays, buyAt) {
                 var portfolioItemIcons = scope.localStorage.portfolio.filter(function (portfolio_item) {
@@ -120,7 +124,7 @@
                 buyAt = buyAt || null;
                 forDays = forDays || null;
                 if(forDays === null){
-                    from = 1119000000;
+                    from = (iconChartObject.from || 1119000000);
                 }else{
                     from = (nowEpoch - forDays * 86400);
                 }
@@ -359,10 +363,15 @@
                 <div>
                     {{iconChartObject.chart1.dcaAt}}
                 </div>
-                <div google-chart chart="iconChartObject.chart1" style="width:630px;height:500px;float:left;"></div>
-                <div google-chart chart="iconChartObject.chart2" style="width:430px;height:500px;float:left;"></div>
-                <div google-chart chart="iconChartObject.chart3" style="width:430px;height:500px;float:left;"></div>
-                <div google-chart chart="iconChartObject.chart4" style="width:330px;height:500px;float:left;"></div>
+                <div>
+                    <div google-chart chart="iconChartObject.chart1" style="width:100%;height:700px;float:left;"></div>
+                </div>
+                <div>
+                    <div google-chart chart="iconChartObject.chart1" style="width:630px;height:500px;float:left;"></div>
+                    <div google-chart chart="iconChartObject.chart2" style="width:430px;height:500px;float:left;"></div>
+                    <div google-chart chart="iconChartObject.chart3" style="width:430px;height:500px;float:left;"></div>
+                    <div google-chart chart="iconChartObject.chart4" style="width:330px;height:500px;float:left;"></div>
+                </div>
             </div>
         </div>
     </div>
