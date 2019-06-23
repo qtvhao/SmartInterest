@@ -15,19 +15,17 @@
 </head>
 <body>
 <div ng-app="">
+    <input type="text" ng-model="date">{{date}}
     <div ng-repeat="ticker in [
         'VIC',
         'VHM',
         'VCB',
         'VNM',
         'GAS',
-        'ACV',
         'SAB',
         'BID',
         'MSN',
-        'VGI',
         'VRE',
-        'VEA',
         'CTG',
         'PLX',
         'TCB',
@@ -37,16 +35,14 @@
         'MCH',
         'BVH',
         'NVL',
-        'GVR',
         'VPB',
         'MBB',
-        'BSR',
         'MWG',
         'POW',
         'ACB',
         'FPT',
         'HDB',
-        ]" tabindex="{{$index}}">
+        ]" tabindex="{{$index + 2}}">
 <!--        <h1>{{ticker}}</h1>-->
         <div style="margin-top: 40px;">
             <div class="full-width">
@@ -55,22 +51,22 @@
         </div>
         <div>
             <div class="wrap">
-                <img src="static/price-model.png" ng-src="http://cafef4.vcmedia.vn/20190622/{{ticker}}/3years.png" alt="">
+                <img src="static/price-model.png" ng-src="http://cafef4.vcmedia.vn/{{date}}/{{ticker}}/3years.png" alt="">
             </div>
             <div class="wrap">
-                <img src="static/price-model.png" ng-src="http://cafef4.vcmedia.vn/20190622/{{ticker}}/1year.png" alt="">
+                <img src="static/price-model.png" ng-src="http://cafef4.vcmedia.vn/{{date}}/{{ticker}}/1year.png" alt="">
             </div>
             <div class="wrap">
-                <img src="static/price-model.png" ng-src="http://cafef4.vcmedia.vn/20190622/{{ticker}}/6months.png" alt="">
+                <img src="static/price-model.png" ng-src="http://cafef4.vcmedia.vn/{{date}}/{{ticker}}/6months.png" alt="">
             </div>
             <div class="wrap">
-                <img src="static/price-model.png" ng-src="http://cafef4.vcmedia.vn/20190622/{{ticker}}/3months.png" alt="">
+                <img src="static/price-model.png" ng-src="http://cafef4.vcmedia.vn/{{date}}/{{ticker}}/3months.png" alt="">
             </div>
             <div class="wrap">
-                <img src="static/price-model.png" ng-src="http://cafef4.vcmedia.vn/20190622/{{ticker}}/1month.png" alt="">
+                <img src="static/price-model.png" ng-src="http://cafef4.vcmedia.vn/{{date}}/{{ticker}}/1month.png" alt="">
             </div>
             <div class="wrap">
-                <img src="static/price-model.png" ng-src="http://cafef4.vcmedia.vn/20190622/{{ticker}}/7days.png" alt="">
+                <img src="static/price-model.png" ng-src="http://cafef4.vcmedia.vn/{{date}}/{{ticker}}/7days.png" alt="">
             </div>
         </div>
         <div style="clear:both"></div>
