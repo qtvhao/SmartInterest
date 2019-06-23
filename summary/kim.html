@@ -14,7 +14,7 @@
     </style>
 </head>
 <body>
-<div ng-app="">
+<div ng-app="" ng-init="date='20190622'">
     <input type="text" ng-model="date">{{date}}
     <div ng-repeat="ticker in [
         'VNM',
@@ -28,7 +28,7 @@
         'MBB',
         'CTD',
         ]" tabindex="{{$index + 2}}">
-<!--        <h1>{{ticker}}</h1>-->
+        <h1><a href="details.html?t={{ticker}}" target="_blank">{{ticker}}</a></h1>
         <div style="margin-top: 40px;">
             <div class="full-width">
                 <img style="" src="static/price-model.png" ng-src="https://chart.vietstock.vn/finance/{{ticker}}1Y.png?v=e0839e2c-c34f-400c-6226-a3937435a2f9" alt="">

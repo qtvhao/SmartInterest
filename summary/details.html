@@ -1,0 +1,384 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+
+    <style>
+        body{
+            font-family: Arial,Sans-Serif;
+        }
+        input {
+            max-width: 70px;
+            padding: 4px;
+            margin: 4px;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script>
+    <!-- minified for production -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-google-chart/1.0.0-beta.1/ng-google-chart.min.js" type="text/javascript"></script>
+    <script>
+        var app = angular.module('myApp', ['googlechart']);
+        app.controller('myCtrl', function ($scope, $http, $interval) {
+            var scope = $scope;
+            var http = $http;
+            // if(false){
+            // }else{
+                // scope.localStorage = {};
+                // window.localStorage.angular = '{"portfolio":[' +
+                //     '{"date":"Fri Mar 13 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"VJC","price_buyAt":119400,"calculateExpectedInterested":"1.01741351","calculateDiffInDaysHuman":"21.18643884","calculateActualInterested":121500}' +
+                //     '],"expected_interested":30}';
+            // }
+            // scope.localStorage = JSON.parse(window.localStorage.angular);
+            scope.localStorage = {
+                "portfolio": [
+                    {
+                        "date":"Fri Mar 13 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"VJC","price_buyAt":119400,"expectedInterestedInYear":10,
+                    },
+                    {
+                        "date":"Fri Apr 24 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"CTD","price_buyAt":119725,"expectedInterestedInYear":10,
+                    },
+                    {
+                        "date":"Fri May 03 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"DXG","price_buyAt":19958,"expectedInterestedInYear":10,
+                    },
+                    {
+                        "date":"Fri May 17 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"VHM","price_buyAt":86326,"expectedInterestedInYear":10,
+                    },
+                    {
+                        "date":"Fri May 21 2019 00:00:00 GMT+0700 (Indochina Time)","icon":"VRE","price_buyAt":35940,"expectedInterestedInYear":10,
+                    },
+                ],
+                "expected_interested":50,
+                showAllOfIcons:1
+            };
+            scope.localStorage.expected_interested = scope.localStorage.expected_interested || 30;
+            scope.$watch('localStorage', function (newVal, oldVal) {
+                window.localStorage.angular = JSON.stringify(angular.copy(newVal));
+            }, true);
+            $interval(function () {
+                if(typeof scope.localStorage.portfolio !== 'object' || !scope.localStorage.portfolio) {
+                    scope.localStorage.portfolio = [];
+                }
+                scope.localStorage.portfolio = scope.localStorage.portfolio
+                    .map(function (portfolio_item) {
+                        portfolio_item.calculateExpectedInterested = scope.calculateExpectedInterested(portfolio_item);
+                        portfolio_item.calculateDiffInDaysHuman = scope.calculateDiffInDaysHuman(portfolio_item);
+                        portfolio_item.calculateActualInterested = scope.calculateActualInterested(portfolio_item);
+                        portfolio_item.calculateDca = scope.calculateDca(portfolio_item);
+
+                        return portfolio_item;
+                    });
+            }, 5e2);
+            scope.addToPortfolio = function () {
+                if(typeof scope.localStorage.portfolio !=='object' || typeof scope.localStorage.portfolio.push !== 'function') {
+                    scope.localStorage.portfolio = [];
+                }
+                scope.localStorage.portfolio.push({
+                    date: scope.new_portfolio_item_date.toString(),
+                    icon: scope.new_portfolio_item_icon,
+                    price_buyAt: scope.new_portfolio_item_price,
+                });
+            };
+            scope.calculateDiffInDaysHuman = function (portfolio_item) {
+                var forDays = new Date(portfolio_item.date);
+                var diffInDays = (Date.now() - forDays) / 86400000;
+                return diffInDays.toFixed(8);
+            };
+            scope.calculateExpectedInterested = function(portfolio_item){
+                var diffInDaysHuman = scope.calculateDiffInDaysHuman(portfolio_item);
+                var generalExpectedInterested = portfolio_item.expectedInterestedInYear || scope.localStorage.expected_interested;
+                var expectedInterested = ((generalExpectedInterested / 365) * (diffInDaysHuman + 6) + 100) / 100;
+                return expectedInterested.toFixed(8);
+            };
+            scope.calculateDca = function(portfolio_item) {
+                return Math.round((Number(portfolio_item.price_buyAt) * 93/100)/100) * 100;
+            };
+            scope.calculateActualInterested = function (portfolio_item) {
+                var expectedInterestAfterDays = scope.calculateExpectedInterested(portfolio_item);
+                var expectedSoldAt = expectedInterestAfterDays * portfolio_item.price_buyAt;
+                return Math.round(expectedSoldAt / 100) * 100;
+            };
+
+            var ticker = window.location.search.substr(3,3);
+            scope.iconChartObjects = [
+                // 'Misc',
+                // {"icon": "DXG",},//"from":1506387863
+                // {"icon": "CTD",},
+                // {"icon": "BVH",},
+                // {"icon": "VJC",},
+                // {"icon": "VRE",},
+                {"icon": ticker,},
+            ];
+            var returnIconChartObjects = function (iconChartObject, iconChartObjectRef, forDays, buyAt) {
+                var portfolioItemIcons = scope.localStorage.portfolio.filter(function (portfolio_item) {
+                    return portfolio_item.icon === iconChartObject.icon;
+                });
+                if(portfolioItemIcons.length > 0) {
+                    var portfolioItemSelected = portfolioItemIcons[0];
+                    var timeBought = (new Date(portfolioItemSelected.date)).getTime() / 1e3;
+                    var priceBuyAt = portfolioItemSelected.price_buyAt;
+                }
+                if(typeof iconChartObject.icon === 'undefined'){return;}
+                var nowEpoch = Math.round(Date.now().valueOf()/1000);
+                var from;
+                buyAt = buyAt || null;
+                forDays = forDays || null;
+                if(forDays === null){
+                    from = (iconChartObject.from || 1119000000);
+                }else{
+                    from = (nowEpoch - forDays * 86400);
+                }
+                var cacheKey = 'stock_' + iconChartObject.icon + '_' + (new Date).toDateString().replace(' ', '.') + '_' + (new Date(from * 1000)).toDateString();
+                var handleRespData = function (respData) {
+                var minValue = (forDays>70 || forDays === null)?0:null;
+                var baselineColor = 'black';
+
+                angular.extend(iconChartObjectRef, {
+                        "type": "LineChart",
+                        "displayed": false,
+                        "data": {
+                            "cols": [
+                                {
+                                    "id": "month",
+                                    "label": "Month",
+                                    "type": "string",
+                                    "p": {}
+                                },
+                                {
+                                    "id": "price",
+                                    "label": "Price",
+                                    "type": "number"
+                                },
+                                {
+                                    "id": "sale_at",
+                                    "label": "Sale at",
+                                    "type": "number"
+                                }
+                            ],
+                            "rows": [],
+                        },
+                        "options": {
+                            "title": iconChartObject.icon.toUpperCase(),
+                            // "isStacked": "true",
+                            "fill": 20,
+                            "displayExactValues": true,
+                            "vAxis": {
+                                "title": "Price",
+                                // "gridlines": {
+                                //     "count": 10
+                                // }
+                                baseline: (buyAt),
+                                baselineColor: baselineColor,
+                                "minValue": minValue,
+                            },
+                            "hAxis": {
+                                "title": "Time"
+                            }
+                        },
+                        "formatters": {}
+                    }
+                );
+
+                var jsonData = respData.data;
+                var iconData = JSON.parse(jsonData);
+                iconData.c = iconData.c.map(function(c){
+                    return (c > 1000)?c:(c*1000);
+                });
+                iconChartObjectRef.data.rows = iconData.c.map(function (c, i) {
+                    var stockTime = iconData.t[i];
+                    var v = c;
+                    if(stockTime > timeBought) {
+                        var diffInDays = (stockTime - timeBought) / 86400;
+                        var expectedInterested = ((scope.localStorage.expected_interested / 365) * (diffInDays + 6) + 100) / 100;
+                        var expectedSoldAt = expectedInterested * priceBuyAt;
+                        v = expectedSoldAt;
+                    }
+                    var cRows = [
+                        {
+                            "v": c,
+                        },
+                        {
+                            "v": v
+                        },
+                    ];
+                    cRows.unshift({
+                        "v": "Price"
+                    });
+                    return {
+                        "c": cRows
+                    };
+                });
+                var lastPrice = iconData.c[iconData.c.length - 1];
+                var lastPriceOnBuyAt = Math.round(lastPrice / buyAt * 100 * 100) / 100;
+                    for (var i = 1 ; i < 60; i++) {
+                        (function (i) {
+                            if(forDays !== null){return;}
+                            var expectedInterested = ((scope.localStorage.expected_interested / 365) * (i + 6) + 100) / 100;
+                            var expectedSoldAt = expectedInterested * lastPrice;
+                            iconChartObjectRef.data.rows.push({
+                                c:[
+                                    {v:"Price"},
+                                    {v:expectedSoldAt},
+                                    {v:null},
+                                ]
+                            })
+                        })(i);
+                    }
+                    console.log(typeof scope.localStorage.showAllOfIcons);
+                    iconChartObjectRef.dcaAt = lastPrice * 97 / 100;
+                if(lastPriceOnBuyAt < 103 || scope.localStorage.showAllOfIcons===1) {
+                    iconChartObjectRef.options.vAxis.baselineColor = 'green';
+                    iconChartObjectRef.options.titleTextStyle = {
+                        color:'green',
+                        fontSize:20
+                    };
+                }else{
+                    iconChartObjectRef.data.rows = [];
+                    iconChartObject.isHidden = true;
+                    iconChartObjectRef.isHidden = true;
+                }
+                    iconChartObjectRef.options.vAxis.baseline = iconChartObjectRef.data.rows[(iconChartObjectRef.data.rows.length - 1)].c[2].v;
+                    iconChartObjectRef.options.vAxis.baselineColor = 'red';
+                    iconChartObjectRef.options.titleTextStyle = {
+                        color:'red',
+                    };
+                iconChartObjectRef.options.title += (' - (' + lastPriceOnBuyAt + '%)');
+
+            };
+                if(typeof localStorage[cacheKey] === 'undefined')
+                http
+                    .get('https://api.vietstock.vn/ta/history?symbol='+iconChartObject.icon+'&resolution=&from=' + from + '&to=' + nowEpoch + '&date=')
+                    .then(function (respData) {
+                        handleRespData(respData);
+                    });
+                else
+                    handleRespData(JSON.parse(localStorage[cacheKey]));
+            };
+            function getBuyPoint(iconChartObject){
+                switch (iconChartObject.icon) {
+                    case 'VIC':return 98800;
+                    case 'VHM':return 74200;
+                    case 'VRE':return 31000;
+                    case 'MWG':return 83000;
+                    case 'ACB':return 29000;
+                    case 'KDH':return 29400;
+                    case 'MBB':return 19200;
+                    case 'SAB':return 224000;
+                    case 'HPG':return 31400;
+                    case 'VNM':return 125100;
+                    case 'DXG':return 22750;
+                    case 'FPT':return 42500;
+                    case 'VCB':return 58600;
+                    case 'NVL':return 55400;
+                    case 'EIB':return 15000;
+                    case 'QNS':return 40200;
+                    case 'VJC':return 112800;
+                    case 'ACV':return 83500;
+                    case 'PNJ':return 93800;
+                    case 'CTD':return 140900;
+                    case 'POW':return 14900;
+                    case 'BVH':return 79500;
+                }
+            }
+            scope.iconChartObjects.map(function (iconChartObject) {
+                iconChartObject.chart1 = {};
+                iconChartObject.chart2 = {};
+                iconChartObject.chart3 = {};
+                iconChartObject.chart4 = {};
+                returnIconChartObjects(iconChartObject,iconChartObject.chart1,null, getBuyPoint(iconChartObject));
+                returnIconChartObjects(iconChartObject,iconChartObject.chart2, 360, getBuyPoint(iconChartObject));
+                returnIconChartObjects(iconChartObject,iconChartObject.chart3, 60, getBuyPoint(iconChartObject));
+                returnIconChartObjects(iconChartObject,iconChartObject.chart4, 30, getBuyPoint(iconChartObject));
+            })
+        });
+    </script>
+</head>
+<body ng-app="myApp" ng-controller="myCtrl">
+<!--<div>
+    <div>
+        <div ng-show="localStorage.showAllOfIcons==0">
+            localStorage.showAllOfIcons==0
+        </div>
+        <button ng-click="localStorage.showAllOfIcons=0">hideAllOfIcons</button>
+        <button ng-click="localStorage.showAllOfIcons=1">showAllOfIcons</button>
+    </div>
+    <div>
+        <input type="number" ng-model="localStorage.expected_interested"> % expected interested
+    </div>
+    <div>
+        <h4>Portfolio</h4>
+    </div>
+    <div id="portfolio">
+        <div ng-repeat="portfolio_item in localStorage.portfolio">
+            <input type="text" ng-model="portfolio_item.date" placeholder="new_portfolio_item_date">
+            <input type="text" ng-model="portfolio_item.icon" placeholder="new_portfolio_item_icon">
+            Buy at: <input type="number" ng-model="portfolio_item.price_buyAt" placeholder="price_buyAt">
+            Expected interested in year: <input type="number" ng-model="portfolio_item.expectedInterestedInYear" placeholder="expect interested is">
+&lt;!&ndash;            <input type="number" ng-model="portfolio_item.price_soldAt" placeholder="price_soldAt">&ndash;&gt;
+            Interested: {{(portfolio_item.calculateExpectedInterested * 100 % 100)|number:8}} % -
+            After days: <input type="text" ng-value="portfolio_item.calculateDiffInDaysHuman">
+            <strong style="color:darkgreen">Sold at</strong>: <input type="text" ng-value="portfolio_item.calculateActualInterested">
+            <strong style="color:#ff005f">DCA </strong>: <input type="text" ng-value="portfolio_item.calculateDca">
+        </div>
+    </div>
+    <hr>
+    <div>
+        Create new
+    </div>
+    <div>
+        <input type="date" ng-model="new_portfolio_item_date" placeholder="new_portfolio_item_date">
+        <input type="text" ng-model="new_portfolio_item_icon" placeholder="new_portfolio_item_icon">
+        <input type="number" ng-model="new_portfolio_item_price" placeholder="new_portfolio_item_price">
+        <button ng-click="addToPortfolio()">Submit</button>
+    </div>
+</div>-->
+
+<div>
+    <div>Market</div>
+
+    <div style="clear:both"></div>
+    <div>
+        <div ng-repeat="iconChartObject in iconChartObjects">
+            <div ng-if="iconChartObject.length">
+                <div style="padding: 20px; font-size: 60px; background-color: whitesmoke; border-bottom: 1px solid #c1c1c1;">{{iconChartObject}}</div>
+            </div>
+            <div ng-if="!iconChartObject.length" ng-hide="iconChartObject.isHidden" style="height:500px;">
+                <div>
+                    {{iconChartObject.chart1.dcaAt}}
+                </div>
+                <div>
+                    <div google-chart chart="iconChartObject.chart1" style="width:100%;height:700px;float:left;"></div>
+                </div>
+<!--
+                <div>
+                    <div google-chart chart="iconChartObject.chart1" style="width:630px;height:500px;float:left;"></div>
+                    <div google-chart chart="iconChartObject.chart2" style="width:430px;height:500px;float:left;"></div>
+                    <div google-chart chart="iconChartObject.chart3" style="width:430px;height:500px;float:left;"></div>
+                    <div google-chart chart="iconChartObject.chart4" style="width:330px;height:500px;float:left;"></div>
+                </div>
+-->
+            </div>
+        </div>
+    </div>
+    <div>
+        <img src="http://cafefcdn.com/thumb_w/640/2019/2/4/1-15492700287171003133110.png" style="max-width: 100%;" alt="">
+        <div>
+            07-02-2019 - 08:45 AM | Thị trường chứng khoán
+        </div>
+        <div style="clear:both"></div>
+        <div style="width: 6000px;">
+            <div style="width: 50%;float:left"><img style="width: 100%" src="static/big-10.png" alt=""></div>
+            <div style="width: 30%;float:left"><img style="width: 100%" src="static/big-10-20.png" alt=""></div>
+            <div style="width: 20%;float:left"><img style="width: 100%" src="static/big-20-30.png" alt=""></div>
+        </div>
+        <div>
+            <img style="width: 1500px" src="static/big30.png" alt="">
+        </div>
+        <div>
+            <img style="width: 1500px" src="static/price-model.png" alt="">
+        </div>
+    </div>
+</div>
+</body>
+</html>
